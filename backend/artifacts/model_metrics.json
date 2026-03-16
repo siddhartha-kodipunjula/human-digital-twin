@@ -1,0 +1,113 @@
+{
+  "trained_at": "2026-03-16T18:28:58.106180+00:00",
+  "dataset_path": "C:\\Users\\kodip\\Documents\\mini project\\digitaltwin\\human-digital-twin\\dataset\\wellness_dataset.csv",
+  "records_used": 7000,
+  "metrics": {
+    "logistic_regression": {
+      "accuracy": 0.7886,
+      "precision": 0.784,
+      "recall": 0.7886,
+      "f1_score": 0.7811,
+      "confusion_matrix": [
+        [
+          8,
+          12,
+          0,
+          0
+        ],
+        [
+          3,
+          277,
+          114,
+          0
+        ],
+        [
+          0,
+          61,
+          755,
+          30
+        ],
+        [
+          0,
+          0,
+          76,
+          64
+        ]
+      ]
+    },
+    "random_forest": {
+      "accuracy": 0.8071,
+      "precision": 0.8093,
+      "recall": 0.8071,
+      "f1_score": 0.7945,
+      "confusion_matrix": [
+        [
+          2,
+          18,
+          0,
+          0
+        ],
+        [
+          0,
+          284,
+          110,
+          0
+        ],
+        [
+          0,
+          47,
+          783,
+          16
+        ],
+        [
+          0,
+          0,
+          79,
+          61
+        ]
+      ]
+    },
+    "lstm": {
+      "accuracy": 0.8164,
+      "precision": 0.8186,
+      "recall": 0.8164,
+      "f1_score": 0.8093,
+      "confusion_matrix": [
+        [
+          4,
+          16,
+          0,
+          0
+        ],
+        [
+          0,
+          277,
+          117,
+          0
+        ],
+        [
+          0,
+          31,
+          779,
+          36
+        ],
+        [
+          0,
+          0,
+          57,
+          83
+        ]
+      ],
+      "final_train_accuracy": 0.8243,
+      "final_val_accuracy": 0.7887
+    }
+  },
+  "best_model": "lstm",
+  "artifacts": {
+    "logistic_confusion_matrix": "C:\\Users\\kodip\\Documents\\mini project\\digitaltwin\\human-digital-twin\\backend\\artifacts\\logistic_confusion_matrix.png",
+    "random_forest_confusion_matrix": "C:\\Users\\kodip\\Documents\\mini project\\digitaltwin\\human-digital-twin\\backend\\artifacts\\random_forest_confusion_matrix.png",
+    "lstm_confusion_matrix": "C:\\Users\\kodip\\Documents\\mini project\\digitaltwin\\human-digital-twin\\backend\\artifacts\\lstm_confusion_matrix.png",
+    "feature_correlation_heatmap": "C:\\Users\\kodip\\Documents\\mini project\\digitaltwin\\human-digital-twin\\backend\\artifacts\\feature_correlation_heatmap.png",
+    "wellness_score_distribution": "C:\\Users\\kodip\\Documents\\mini project\\digitaltwin\\human-digital-twin\\backend\\artifacts\\wellness_score_distribution.png"
+  }
+}

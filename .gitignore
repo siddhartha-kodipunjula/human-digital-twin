@@ -1,0 +1,15 @@
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+
+# Backend runtime artifacts
+backend/wellness.db
+
+# Frontend
+frontend/digital-twin-dashboard/node_modules/
+frontend/digital-twin-dashboard/dist/
+
+# OS/editor
+.DS_Store
+Thumbs.db
