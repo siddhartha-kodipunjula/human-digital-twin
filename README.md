@@ -1,232 +1,196 @@
-# Human Digital Twin for Personal Wellness Optimization
+# Human Digital Twin AI Platform (Production-Oriented)
 
-Production-style mini project that simulates a person's wellness state using machine learning and visualizes insights in a modern interactive dashboard.
+This repository now contains a modular, production-style full-stack **Human Digital Twin platform** for personal wellness optimization with:
 
-## Project Objective
+- JWT authentication + secure sessions
+- Profile-driven personalization
+- Daily logs + food/macronutrient logging
+- Ensemble ML inference (Logistic, RF, XGBoost, LightGBM, Neural Net)
+- Cluster-based personalization
+- Time-series forecasting (7-day future wellness)
+- What-if simulation
+- Advanced dashboard analytics (weekly/monthly trends, anomalies, habit impact)
 
-The system predicts a user's wellness condition from health and lifestyle parameters and provides actionable recommendations.
-
-Core capabilities:
-- Manual health data entry
-- CSV/Excel dataset upload and batch predictions
-- ML model training pipeline
-- Wellness prediction and category classification
-- Interactive analytics dashboards
-- Prediction history and export tools
-
-## Tech Stack
-
-### Machine Learning
-- Python
-- Pandas, NumPy
-- Scikit-learn
-- TensorFlow/Keras (optional but supported in code)
-- Matplotlib, Seaborn
-
-### Backend
-- FastAPI
-- SQLite
-
-### Frontend
-- React (Vite)
-- TailwindCSS
-- Framer Motion
-- Recharts
-
-## Input Parameters
-
-- `age`
-- `gender`
-- `sleep_hours`
-- `daily_steps`
-- `heart_rate`
-- `calories_burned`
-- `stress_level`
-- `water_intake`
-- `exercise_minutes`
-
-## Output
-
-- `wellness_score` (0-100)
-- `wellness_category` (`Poor`, `Average`, `Good`, `Excellent`)
-- Personalized AI recommendations
-
-## Project Structure
+## Folder Structure
 
 ```text
 human-digital-twin/
 ├── backend/
-│   ├── main.py
-│   ├── model_training.py
-│   ├── prediction_engine.py
-│   ├── data_processing.py
-│   ├── database.py
+│   ├── app/
+│   │   ├── config.py
+│   │   ├── database.py
+│   │   ├── dependencies.py
+│   │   ├── models.py
+│   │   ├── schemas.py
+│   │   ├── security.py
+│   │   ├── ml/
+│   │   │   ├── feature_engineering.py
+│   │   │   ├── recommendation.py
+│   │   │   ├── timeseries.py
+│   │   │   ├── training.py
+│   │   │   └── engine.py
+│   │   ├── routers/
+│   │   │   ├── auth.py
+│   │   │   ├── profile.py
+│   │   │   ├── daily_logs.py
+│   │   │   ├── nutrition.py
+│   │   │   ├── predictions.py
+│   │   │   ├── dashboard.py
+│   │   │   └── ml_ops.py
+│   │   └── services/
+│   │       ├── analytics.py
+│   │       └── nutrition.py
+│   ├── artifacts/
 │   ├── requirements.txt
-│   └── artifacts/
-├── models/
-│   ├── logistic_regression.pkl
-│   ├── random_forest.pkl
-│   ├── preprocessor.pkl
-│   └── lstm_model.h5 (generated when TensorFlow is installed)
-├── dataset/
-│   └── wellness_dataset.csv
+│   └── main.py
 ├── frontend/
 │   └── digital-twin-dashboard/
 │       ├── src/
-│       ├── package.json
-│       └── ...
+│       │   ├── api.js
+│       │   ├── auth-context.jsx
+│       │   ├── App.jsx
+│       │   ├── components/
+│       │   │   ├── AppLayout.jsx
+│       │   │   └── ProtectedRoute.jsx
+│       │   └── pages/
+│       │       ├── LoginPage.jsx
+│       │       ├── SignupPage.jsx
+│       │       ├── ProfilePage.jsx
+│       │       └── DashboardPage.jsx
+│       └── package.json
+├── dataset/
+├── models/
 └── README.md
 ```
 
-## Architecture Diagram
+## Database Design (PostgreSQL-Ready)
 
-```mermaid
-flowchart LR
-  A[User Input: Manual Form / CSV Upload] --> B[React Dashboard]
-  B --> C[FastAPI Backend]
-  C --> D[Prediction Engine]
-  D --> E[Trained Models]
-  E --> F[Wellness Score + Category + Recommendations]
-  C --> G[(SQLite)]
-  G --> H[Prediction History / Model Performance]
-  C --> I[Training Pipeline]
-  I --> E
-  I --> J[Artifacts: Metrics + Confusion Matrices]
-  J --> B
-```
+Defined in `backend/app/models.py` via SQLAlchemy ORM:
 
-## Dataset
+- `users`: identity + hashed password
+- `user_sessions`: JWT session tracking (`jti`, expiry, revoke state)
+- `profiles`: static twin profile (age, gender, body metrics, food pattern, conditions, goal)
+- `daily_logs`: dynamic daily health/wellness inputs
+- `food_logs`: meal-wise nutrition + macros
+- `predictions`: prediction history, model outputs, recommendations, what-if scenarios
+- `model_metrics`: model training/evaluation snapshots
 
-If dataset is missing, synthetic data is generated (`5000-10000` configurable, default `7000`).
+`DATABASE_URL` defaults to PostgreSQL format. If unavailable, the app falls back to local SQLite for development continuity.
 
-Columns:
-- `age`
-- `gender`
-- `sleep_hours`
-- `daily_steps`
-- `heart_rate`
-- `calories_burned`
-- `stress_level`
-- `water_intake`
-- `exercise_minutes`
-- `wellness_score`
+## API Endpoints
 
-`wellness_score` is computed using a weighted formula that combines positive and negative wellness factors.
+Base prefix: `/api/v1`
 
-## Model Training
+### Auth
+- `POST /auth/signup`
+- `POST /auth/login`
+- `POST /auth/logout`
+- `GET /auth/me`
 
-Implemented models:
-1. Logistic Regression
-2. Random Forest (`n_estimators=100`)
-3. LSTM Neural Network (if TensorFlow is available)
+### Profile
+- `GET /profile`
+- `PUT /profile`
 
-Evaluation metrics:
-- Accuracy
-- Precision
-- Recall
-- F1 Score
+### Daily Logs
+- `POST /daily-logs` (upsert by date)
+- `PATCH /daily-logs/{log_date}`
+- `GET /daily-logs`
 
-Artifacts saved in `backend/artifacts/`:
-- `model_metrics.json`
-- confusion matrix images
-- correlation heatmap
-- wellness score distribution plot
+### Nutrition
+- `POST /nutrition/logs`
+- `GET /nutrition/logs`
+- `GET /nutrition/summary/{log_date}`
 
-Current sample run (`7000` synthetic rows in this environment):
+### Predictions
+- `POST /predictions/run`
+- `POST /predictions/simulate` (what-if)
+- `GET /predictions/history`
+- `GET /predictions/forecast`
 
-| Model | Accuracy | Precision | Recall | F1 |
-|---|---:|---:|---:|---:|
-| Logistic Regression | 0.7750 | 0.7712 | 0.7750 | 0.7698 |
-| Random Forest | 0.7914 | 0.7911 | 0.7914 | 0.7837 |
-| LSTM | Not available | - | - | - |
+### Dashboard Analytics
+- `GET /dashboard/overview`
+- `GET /dashboard/anomalies`
+- `GET /dashboard/habit-impact`
+- `GET /dashboard/trends`
 
-## FastAPI Endpoints
+### ML Ops
+- `POST /ml/train`
+- `GET /ml/metrics`
 
-- `POST /predict`  
-  Predict wellness for one user input.
+## ML Integration Overview
 
-- `POST /upload-data`  
-  Upload CSV/XLSX, run batch predictions, and return dataset insights.
+Implemented in `backend/app/ml/`:
 
-- `POST /train-model`  
-  Trigger training pipeline.
+- Feature engineering:
+  - BMI auto-calculation
+  - Activity ratio
+  - Sleep quality score
+- Models:
+  - Logistic Regression
+  - Random Forest
+  - XGBoost (if installed)
+  - LightGBM (if installed)
+  - MLP Neural Network
+- Personalization:
+  - Cluster-based models using KMeans + cluster-specific RF
+- Forecasting:
+  - LSTM-based sequence model (TensorFlow when available)
+  - Weighted moving-average fallback for low-resource/runtime-safe use
+- Recommendation engine:
+  - Rule-based + ML-confidence-aware hybrid recommendations
 
-- `GET /model-performance`  
-  Return model performance metrics.
+## Frontend Features
 
-- `GET /prediction-history`  
-  Return previous prediction records.
+Implemented with React + Vite + Tailwind + Recharts:
 
-## Dashboard Modes
+- Login / Signup pages
+- Protected routes
+- Profile management page
+- Dashboard:
+  - Current vs predicted twin state
+  - Daily log input and prediction trigger
+  - What-if simulation
+  - Weekly/monthly trends
+  - Forecast charts
+  - Anomaly detection display
+  - Habit impact chart
+  - Nutrition logging and macro summaries
 
-1. Wellness Overview Dashboard
-- Score card
-- Digital twin status panel (green/yellow/red)
-- AI recommendations
-- Model comparison and prediction history
+## Setup
 
-2. Analytics Dashboard
-- Sleep vs Wellness
-- Stress vs Wellness
-- Daily Steps vs Wellness
-- Heart rate trends
-
-3. Dataset Insights Dashboard
-- Uploaded dataset summary
-- Category distribution
-- Correlation snapshot
-- Batch prediction preview
-
-## Bonus Features Included
-
-- Dark mode toggle
-- Prediction history tracking (SQLite)
-- Export prediction history (CSV)
-- Download wellness report (text file)
-
-## Setup and Run
-
-### 1. Backend
+### Backend
 
 ```bash
-cd human-digital-twin/backend
+cd backend
 python -m venv .venv
-# Windows
 .venv\Scripts\activate
 pip install -r requirements.txt
-```
-
-Run API:
-
-```bash
 uvicorn main:app --reload --port 8000
 ```
 
-Train models manually:
+### Frontend
 
 ```bash
-python model_training.py --force-generate --records 7000 --lstm-epochs 15
-```
-
-### 2. Frontend
-
-```bash
-cd human-digital-twin/frontend/digital-twin-dashboard
+cd frontend/digital-twin-dashboard
 npm install
 npm run dev
 ```
 
-Open: `http://localhost:5173`
+### Environment Variables (Recommended)
 
-## Screenshots / Generated Visuals
+- `DATABASE_URL=postgresql+psycopg://<user>:<password>@<host>:5432/<db>`
+- `JWT_SECRET_KEY=<strong-random-secret>`
+- `JWT_ACCESS_TOKEN_EXPIRE_MINUTES=120`
+- `CORS_ORIGINS=http://localhost:5173`
+- `VITE_API_BASE_URL=http://localhost:8000/api/v1`
 
-Use generated artifacts as report visuals:
-- `backend/artifacts/logistic_confusion_matrix.png`
-- `backend/artifacts/random_forest_confusion_matrix.png`
-- `backend/artifacts/feature_correlation_heatmap.png`
-- `backend/artifacts/wellness_score_distribution.png`
+## Deployment (Suggested)
+
+- Frontend: Vercel / Netlify
+- Backend: Render / Railway / Fly.io
+- Database: PostgreSQL (Neon / Supabase / Railway Postgres)
 
 ## Notes
 
-- In this environment, TensorFlow may not be installed by default.  
-  If unavailable, Logistic Regression and Random Forest still train and serve predictions; LSTM metrics are reported as unavailable until TensorFlow is installed.
+- Advanced optional features such as chatbot assistant, gamification badges/streaks, and wearable connectors are now straightforward extensions over this modular architecture.
+- First training run can be triggered with `POST /api/v1/ml/train`.
