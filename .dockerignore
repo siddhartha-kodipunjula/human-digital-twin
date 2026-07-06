@@ -1,0 +1,15 @@
+node_modules
+dist
+build
+.well-known
+.git
+.gitignore
+.env
+.venv
+__pycache__
+*.pyc
+.pytest_cache
+.coverage
+htmlcov
+.idea
+.vscode
