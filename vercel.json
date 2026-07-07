@@ -1,7 +1,7 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "framework": "vite",
-  "installCommand": "npm ci --prefix frontend/digital-twin-dashboard",
+  "installCommand": "npm install --prefix frontend/digital-twin-dashboard",
   "buildCommand": "npm run build --prefix frontend/digital-twin-dashboard",
   "outputDirectory": "frontend/digital-twin-dashboard/dist",
   "rewrites": [
